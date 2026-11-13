@@ -5,27 +5,24 @@ export default function Main() {
     const [meme, setMeme] = useState({
         topText: "One does not simply",
         bottomText: "Walk into Mordor",
-        imageUrl: ""
+        imageUrl: "http://i.imgflip.com/1bij.jpg"
     })
-
-    const [count,setCount]=useState(0)
-    function changeMeme(){
-        console.log("clicked")
-        setCount(count + 1 )
-    }
-
-    
-
-    useEffect(()=>{
+    const [allMemes,setAllMemes]= useState([])
+      
+        useEffect(()=> {
         fetch("https://api.imgflip.com/get_memes")
         .then(res => res.json())
-        .then ( data => {
-            const meme =  data.data.memes  
-            setMeme(prevMeme => ({...prevMeme, imageUrl : meme[Math.floor(Math.random() * meme.length)].url})) })
-        },[count])
+        .then(data => setAllMemes(data.data.memes))
+        ,[]})
+    
 
-    
-    
+
+    function change(){   
+        const aleatoire = Math.floor(Math.random() * allMemes.length)
+        const newImage = allMemes[aleatoire].url
+        setMeme(prevMeme => ({...prevMeme, imageUrl : newImage }))
+    }
+
     function handleChange(event) {
         const {value, name} = event.currentTarget
         setMeme(prevMeme => ({
@@ -56,7 +53,7 @@ export default function Main() {
                         value={meme.bottomText}
                     />
                 </label>
-                <button onClick={changeMeme}>Get a new meme image 🖼</button>
+                <button onClick={change}>Get a new meme image 🖼</button>
             </div>
             <div className="meme">
                 <img src={meme.imageUrl} />
